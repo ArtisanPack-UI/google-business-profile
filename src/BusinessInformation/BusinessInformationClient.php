@@ -148,36 +148,34 @@ class BusinessInformationClient extends BaseClient
     /**
      * Fetch a single location by resource name.
      *
-     * `readMask` is optional but strongly recommended: without it the API
-     * returns a minimal projection and later adds new fields silently. Pass
-     * an explicit mask to lock the response shape.
+     * `readMask` is required by the API and controls which location fields
+     * are populated in the response; omitting it causes the API to reject
+     * the request.
      *
      * @since 1.0.0
      *
      * @param  string  $name  Location resource name
      *                        (`locations/{locationId}`).
-     * @param  list<string>|string|null  $readMask  Optional FieldMask; see
-     *                                              {@see listLocations()}
-     *                                              for the accepted forms.
+     * @param  list<string>|string  $readMask  FieldMask selecting which
+     *                                         location fields to return;
+     *                                         see {@see listLocations()}
+     *                                         for the accepted forms.
      *
      * @throws InvalidArgumentException When `name` is empty or `readMask`
-     *                                  was supplied but normalises to
-     *                                  empty.
+     *                                  normalises to empty.
      * @throws \ArtisanPackUI\GoogleBusinessProfile\Exceptions\ApiException
      *         When the API returns an error or the request fails at the
      *         transport level after all retries.
      */
-    public function getLocation( string $name, string|array|null $readMask = null ): Location
+    public function getLocation( string $name, string|array $readMask ): Location
     {
         if ( '' === $name ) {
             throw new InvalidArgumentException( 'name is required and must be a non-empty location resource name.' );
         }
 
-        $query = [];
-
-        if ( null !== $readMask ) {
-            $query['readMask'] = $this->normaliseFieldMask( $readMask, 'readMask' );
-        }
+        $query = [
+            'readMask' => $this->normaliseFieldMask( $readMask, 'readMask' ),
+        ];
 
         $body = $this->request( 'GET', $name, $query );
 
@@ -196,7 +194,9 @@ class BusinessInformationClient extends BaseClient
      *
      * `validateOnly` performs a dry run when true: the API validates the
      * request without persisting any change, which is useful for
-     * pre-flight checks in wizards.
+     * pre-flight checks in wizards. On a successful dry run the API
+     * returns an empty body, so the return value is null in that case;
+     * every non-dry-run success returns the updated {@see Location}.
      *
      * @since 1.0.0
      *
@@ -214,9 +214,10 @@ class BusinessInformationClient extends BaseClient
      *                                           (`phoneNumbers,regularHours`)
      *                                           or a list of paths.
      * @param  bool  $validateOnly  When true, ask the API to validate the
-     *                              request without persisting; the
-     *                              response still returns the (would-be)
-     *                              Location.
+     *                              request without persisting; a
+     *                              successful dry run responds with an
+     *                              empty body and this method returns
+     *                              null.
      *
      * @throws InvalidArgumentException When `name` is empty, `location`
      *                                  is empty, or `updateMask`
@@ -230,7 +231,7 @@ class BusinessInformationClient extends BaseClient
         array $location,
         string|array $updateMask,
         bool $validateOnly = false,
-    ): Location {
+    ): ?Location {
         if ( '' === $name ) {
             throw new InvalidArgumentException( 'name is required and must be a non-empty location resource name.' );
         }
@@ -251,6 +252,10 @@ class BusinessInformationClient extends BaseClient
         $payload['name'] = $name;
 
         $body = $this->request( 'PATCH', $name, $query, $payload );
+
+        if ( true === $validateOnly && [] === $body ) {
+            return null;
+        }
 
         return Location::fromArray( $body );
     }

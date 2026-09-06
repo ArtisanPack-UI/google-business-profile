@@ -58,6 +58,21 @@ test( 'skips malformed non-array entries in the locations array', function (): v
     expect( $list->locations[1]->name )->toBe( 'locations/2' );
 } );
 
+test( 'skips empty and list-shaped entries so blank Locations do not inflate the page count', function (): void {
+    $list = LocationList::fromArray( [
+        'locations' => [
+            [ 'name' => 'locations/1', 'title' => 'Kept' ],
+            [],
+            [ 'just', 'values', 'no', 'keys' ],
+            [ 'name' => 'locations/2', 'title' => 'Also kept' ],
+        ],
+    ] );
+
+    expect( $list->locations )->toHaveCount( 2 );
+    expect( $list->locations[0]->name )->toBe( 'locations/1' );
+    expect( $list->locations[1]->name )->toBe( 'locations/2' );
+} );
+
 test( 'treats a non-array locations value as an empty page', function (): void {
     $list = LocationList::fromArray( [ 'locations' => 'oops' ] );
 

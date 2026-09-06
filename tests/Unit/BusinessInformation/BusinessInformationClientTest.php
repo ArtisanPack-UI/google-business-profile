@@ -250,38 +250,31 @@ test( 'getLocation fetches a single location and returns a typed DTO', function 
     } );
 } );
 
-test( 'getLocation omits readMask when the caller did not supply one', function (): void {
-    $factory = new HttpFactory();
-    $factory->fake( [ '*' => $factory::response( [ 'name' => 'locations/1', 'title' => 'T' ], 200 ) ] );
-
-    $client = gbpBusinessInformationClient( $factory );
-
-    $client->getLocation( 'locations/1' );
-
-    $factory->assertSent( function ( Request $request ): bool {
-        return 'https://mybusinessbusinessinformation.googleapis.com/v1/locations/1' === $request->url();
-    } );
-} );
-
 test( 'getLocation rejects an empty name without making a request', function (): void {
     $factory = new HttpFactory();
     $factory->fake( [ '*' => $factory::response( [ 'name' => 'locations/1' ], 200 ) ] );
 
     $client = gbpBusinessInformationClient( $factory );
 
-    expect( fn (): Location => $client->getLocation( '' ) )
+    expect( fn (): Location => $client->getLocation( '', 'name' ) )
         ->toThrow( InvalidArgumentException::class );
 
     $factory->assertSentCount( 0 );
 } );
 
-test( 'getLocation rejects a readMask that was supplied but normalises to empty', function (): void {
+test( 'getLocation rejects a readMask that normalises to empty', function (): void {
     $factory = new HttpFactory();
     $factory->fake( [ '*' => $factory::response( [ 'name' => 'locations/1' ], 200 ) ] );
 
     $client = gbpBusinessInformationClient( $factory );
 
     expect( fn (): Location => $client->getLocation( 'locations/1', '   ' ) )
+        ->toThrow( InvalidArgumentException::class );
+
+    expect( fn (): Location => $client->getLocation( 'locations/1', ',,,' ) )
+        ->toThrow( InvalidArgumentException::class );
+
+    expect( fn (): Location => $client->getLocation( 'locations/1', [] ) )
         ->toThrow( InvalidArgumentException::class );
 
     $factory->assertSentCount( 0 );
@@ -329,22 +322,41 @@ test( 'patchLocation sends a PATCH with the update mask, JSON body, and injected
     } );
 } );
 
-test( 'patchLocation forwards validateOnly=true when the caller opts into a dry run', function (): void {
+test( 'patchLocation forwards validateOnly=true and returns null on the empty dry-run response', function (): void {
     $factory = new HttpFactory();
-    $factory->fake( [ '*' => $factory::response( [ 'name' => 'locations/1', 'title' => 'T' ], 200 ) ] );
+    $factory->fake( [ '*' => $factory::response( '', 200 ) ] );
 
     $client = gbpBusinessInformationClient( $factory );
 
-    $client->patchLocation(
+    $result = $client->patchLocation(
         name        : 'locations/1',
         location    : [ 'title' => 'New' ],
         updateMask  : 'title',
         validateOnly: true,
     );
 
+    expect( $result )->toBeNull();
+
     $factory->assertSent( function ( Request $request ): bool {
         return str_contains( $request->url(), 'validateOnly=true' );
     } );
+} );
+
+test( 'patchLocation still hydrates a Location when a dry-run response unexpectedly includes a body', function (): void {
+    $factory = new HttpFactory();
+    $factory->fake( [ '*' => $factory::response( [ 'name' => 'locations/1', 'title' => 'Preview' ], 200 ) ] );
+
+    $client = gbpBusinessInformationClient( $factory );
+
+    $result = $client->patchLocation(
+        name        : 'locations/1',
+        location    : [ 'title' => 'Preview' ],
+        updateMask  : 'title',
+        validateOnly: true,
+    );
+
+    expect( $result )->toBeInstanceOf( Location::class );
+    expect( $result->title )->toBe( 'Preview' );
 } );
 
 test( 'patchLocation rejects an empty name, body, or updateMask without making a request', function (): void {
@@ -414,7 +426,7 @@ test( 'getLocation maps API errors to ApiException carrying the status and body'
     $thrown = null;
 
     try {
-        $client->getLocation( 'locations/does-not-exist' );
+        $client->getLocation( 'locations/does-not-exist', 'name' );
     } catch ( ApiException $exception ) {
         $thrown = $exception;
     }

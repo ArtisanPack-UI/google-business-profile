@@ -57,9 +57,10 @@ final class LocationList
      *
      * A response with no `locations` key (or a non-array value there) is
      * treated as an empty page, matching how the API omits the key when
-     * the account has no locations. Any entry that is not itself an
-     * associative array is skipped so a malformed row does not poison
-     * the rest of the page.
+     * the account has no locations. Any entry that is not itself a
+     * non-empty associative array is skipped so a malformed row (empty
+     * `{}`, list-shaped payload, scalar, ...) does not silently inflate
+     * the page count with blank {@see Location}s.
      *
      * @since 1.0.0
      *
@@ -73,7 +74,7 @@ final class LocationList
 
         if ( is_array( $rawLocations ) ) {
             foreach ( $rawLocations as $rawLocation ) {
-                if ( is_array( $rawLocation ) ) {
+                if ( is_array( $rawLocation ) && [] !== $rawLocation && ! array_is_list( $rawLocation ) ) {
                     $locations[] = Location::fromArray( $rawLocation );
                 }
             }
