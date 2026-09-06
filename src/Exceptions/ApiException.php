@@ -70,7 +70,7 @@ class ApiException extends GoogleBusinessProfileException
             401 === $status                 => 'Google Business Profile authentication failed (HTTP 401): the supplied access token was rejected.',
             403 === $status                 => 'Google Business Profile authorization failed (HTTP 403): the token lacks the required scope or the API is not enabled/approved for this Google Cloud project.',
             404 === $status                 => 'Google Business Profile resource not found (HTTP 404).',
-            429 === $status                 => 'Google Business Profile request was rate-limited (HTTP 429).',
+            429 === $status                 => self::rateLimitMessage( $body ),
             $status >= 500 && $status < 600 => sprintf( 'Google Business Profile server error (HTTP %d).', $status ),
             default                         => sprintf( 'Google Business Profile request failed (HTTP %d).', $status ),
         };
@@ -80,6 +80,81 @@ class ApiException extends GoogleBusinessProfileException
         $exception->responseBody = $body;
 
         return $exception;
+    }
+
+    /**
+     * Pick a message for a `HTTP 429` response.
+     *
+     * Google returns `HTTP 429 RESOURCE_EXHAUSTED` for two distinct
+     * conditions on the Business Profile APIs:
+     *
+     * 1. Real per-minute rate limiting once the project has quota — a
+     *    transient condition; retrying (with backoff) will eventually
+     *    succeed.
+     * 2. The **access-approval gate**: until Google approves the project
+     *    for Business Profile API access, every Business Profile API
+     *    surface returns `quota_limit_value: "0"` — the endpoints are
+     *    reachable but no requests are permitted. Retrying will never
+     *    succeed; the project needs approval via the API access request
+     *    form.
+     *
+     * We distinguish the two by inspecting the standard `google.rpc.ErrorInfo`
+     * detail Google attaches to the response body. When we can positively
+     * identify condition 2, we surface an actionable message pointing at
+     * the access-request form; otherwise we fall back to the generic
+     * rate-limit text.
+     *
+     * The parser is intentionally defensive: the raw body is untrusted
+     * bytes from a remote service, so malformed JSON, missing keys, or
+     * unexpected types must not throw here (the caller is already inside
+     * an exception path). Any of those bail out to the generic message.
+     *
+     * @since 1.0.0
+     */
+    protected static function rateLimitMessage( string $body ): string
+    {
+        $default = 'Google Business Profile request was rate-limited (HTTP 429).';
+
+        if ( '' === $body ) {
+            return $default;
+        }
+
+        $decoded = json_decode( $body, true );
+        if ( ! is_array( $decoded ) ) {
+            return $default;
+        }
+
+        $details = $decoded['error']['details'] ?? null;
+        if ( ! is_array( $details ) ) {
+            return $default;
+        }
+
+        foreach ( $details as $detail ) {
+            if ( ! is_array( $detail ) ) {
+                continue;
+            }
+
+            $reason = $detail['reason'] ?? null;
+            if ( 'RATE_LIMIT_EXCEEDED' !== $reason ) {
+                continue;
+            }
+
+            $metadata = $detail['metadata'] ?? null;
+            if ( ! is_array( $metadata ) ) {
+                continue;
+            }
+
+            $limit = $metadata['quota_limit_value'] ?? null;
+            if ( ! is_scalar( $limit ) ) {
+                continue;
+            }
+
+            if ( '0' === (string) $limit ) {
+                return 'Google Business Profile API access is not approved for this Google Cloud project (HTTP 429 with per-minute quota set to 0). Submit the access request at https://support.google.com/business/contact/api_default and retry once approval lands.';
+            }
+        }
+
+        return $default;
     }
 
     /**
