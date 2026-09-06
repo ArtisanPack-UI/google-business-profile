@@ -29,3 +29,40 @@ test( 'treats an empty-string update time as absent', function (): void {
 
     expect( $reply->updateTime )->toBeNull();
 } );
+
+test( 'hydrates the reviewReplyState and policyViolation moderation fields when present', function (): void {
+    $reply = ReviewReply::fromArray( [
+        'comment'          => 'Thanks',
+        'reviewReplyState' => 'REJECTED',
+        'policyViolation'  => 'OFFENSIVE',
+    ] );
+
+    expect( $reply->reviewReplyState )->toBe( 'REJECTED' );
+    expect( $reply->policyViolation )->toBe( 'OFFENSIVE' );
+} );
+
+test( 'defaults reviewReplyState and policyViolation to null when absent or empty', function (): void {
+    $absent = ReviewReply::fromArray( [ 'comment' => 'Thanks' ] );
+
+    expect( $absent->reviewReplyState )->toBeNull();
+    expect( $absent->policyViolation )->toBeNull();
+
+    $empty = ReviewReply::fromArray( [
+        'comment'          => 'Thanks',
+        'reviewReplyState' => '',
+        'policyViolation'  => '',
+    ] );
+
+    expect( $empty->reviewReplyState )->toBeNull();
+    expect( $empty->policyViolation )->toBeNull();
+} );
+
+test( 'preserves an approved-state payload without a policyViolation', function (): void {
+    $reply = ReviewReply::fromArray( [
+        'comment'          => 'Thanks',
+        'reviewReplyState' => 'APPROVED',
+    ] );
+
+    expect( $reply->reviewReplyState )->toBe( 'APPROVED' );
+    expect( $reply->policyViolation )->toBeNull();
+} );

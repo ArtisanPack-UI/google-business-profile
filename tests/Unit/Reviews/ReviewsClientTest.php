@@ -268,6 +268,52 @@ test( 'replyToReview rejects a whitespace-only comment without dispatching', fun
     $factory->assertSentCount( 0 );
 } );
 
+test( 'replyToReview accepts a trimmed comment of exactly MAX_REPLY_COMMENT_BYTES bytes', function (): void {
+    $factory = new HttpFactory();
+    $factory->fake( [ '*' => $factory::response( [ 'comment' => 'ok' ], 200 ) ] );
+
+    $client = gbpReviewsClient( $factory );
+
+    $exactMax = str_repeat( 'a', ReviewsClient::MAX_REPLY_COMMENT_BYTES );
+
+    $client->replyToReview( 'accounts/1/locations/2/reviews/abc', $exactMax );
+
+    $factory->assertSent( function ( Request $request ) use ( $exactMax ): bool {
+        return [ 'comment' => $exactMax ] === $request->data();
+    } );
+} );
+
+test( 'replyToReview rejects a trimmed comment one byte over MAX_REPLY_COMMENT_BYTES without dispatching', function (): void {
+    $factory = new HttpFactory();
+    $factory->fake( [ '*' => $factory::response( [ 'comment' => 'ok' ], 200 ) ] );
+
+    $client = gbpReviewsClient( $factory );
+
+    $tooLong = str_repeat( 'a', ReviewsClient::MAX_REPLY_COMMENT_BYTES + 1 );
+
+    expect( fn (): ReviewReply => $client->replyToReview( 'accounts/1/locations/2/reviews/abc', $tooLong ) )
+        ->toThrow( InvalidArgumentException::class );
+
+    $factory->assertSentCount( 0 );
+} );
+
+test( 'replyToReview measures the reply cap in bytes, not characters, so multi-byte UTF-8 counts correctly', function (): void {
+    $factory = new HttpFactory();
+    $factory->fake( [ '*' => $factory::response( [ 'comment' => 'ok' ], 200 ) ] );
+
+    $client = gbpReviewsClient( $factory );
+
+    // Each "€" is 3 bytes in UTF-8. 1366 * 3 = 4098 bytes — 2 bytes over the cap.
+    $tooLong = str_repeat( '€', 1366 );
+
+    expect( strlen( $tooLong ) )->toBe( 4098 );
+
+    expect( fn (): ReviewReply => $client->replyToReview( 'accounts/1/locations/2/reviews/abc', $tooLong ) )
+        ->toThrow( InvalidArgumentException::class );
+
+    $factory->assertSentCount( 0 );
+} );
+
 test( 'replyToReview maps API errors to ApiException carrying the status and body', function (): void {
     $factory = new HttpFactory();
     $factory->fake( [ '*' => $factory::response( 'not found', 404 ) ] );

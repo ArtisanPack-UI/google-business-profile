@@ -78,7 +78,7 @@ final class ReviewList
 
         if ( is_array( $rawReviews ) ) {
             foreach ( $rawReviews as $rawReview ) {
-                if ( is_array( $rawReview ) ) {
+                if ( is_array( $rawReview ) && ! array_is_list( $rawReview ) ) {
                     $reviews[] = Review::fromArray( $rawReview );
                 }
             }

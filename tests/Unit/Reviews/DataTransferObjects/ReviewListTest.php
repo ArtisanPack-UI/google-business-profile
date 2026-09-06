@@ -61,6 +61,20 @@ test( 'skips malformed non-array entries in the reviews array', function (): voi
     expect( $list->reviews[1]->reviewId )->toBe( 'kept-2' );
 } );
 
+test( 'skips indexed (list-shaped) review entries because they are not valid Review payloads', function (): void {
+    $list = ReviewList::fromArray( [
+        'reviews' => [
+            [ 'name' => 'accounts/1/locations/2/reviews/kept', 'reviewId' => 'kept' ],
+            [ 'oops', 'list', 'shaped' ],
+            [ 'name' => 'accounts/1/locations/2/reviews/also-kept', 'reviewId' => 'also-kept' ],
+        ],
+    ] );
+
+    expect( $list->reviews )->toHaveCount( 2 );
+    expect( $list->reviews[0]->reviewId )->toBe( 'kept' );
+    expect( $list->reviews[1]->reviewId )->toBe( 'also-kept' );
+} );
+
 test( 'treats a non-array reviews value as an empty page', function (): void {
     $list = ReviewList::fromArray( [ 'reviews' => 'oops' ] );
 

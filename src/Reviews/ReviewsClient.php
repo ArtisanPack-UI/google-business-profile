@@ -63,6 +63,20 @@ class ReviewsClient extends BaseClient
     public const MAX_PAGE_SIZE = 50;
 
     /**
+     * Google's documented maximum size, in bytes, for the `comment` field
+     * on `ReviewReply`. Longer bodies are rejected by the API, so the
+     * client validates against this ceiling and throws
+     * {@see InvalidArgumentException} to fail loudly during development
+     * rather than after a network round-trip. The limit is measured in
+     * bytes of the UTF-8 encoded string, not characters.
+     *
+     * @since 1.0.0
+     *
+     * @var int
+     */
+    public const MAX_REPLY_COMMENT_BYTES = 4096;
+
+    /**
      * List the reviews attached to a single location.
      *
      * Returns a single page. When {@see ReviewList::$nextPageToken} is
@@ -148,8 +162,11 @@ class ReviewsClient extends BaseClient
      *                           non-empty, otherwise the API rejects the
      *                           request with a validation error.
      *
-     * @throws InvalidArgumentException When `name` is empty or `comment`
-     *                                  is empty after trimming.
+     * @throws InvalidArgumentException When `name` is empty, `comment`
+     *                                  is empty after trimming, or the
+     *                                  trimmed `comment` exceeds
+     *                                  {@see self::MAX_REPLY_COMMENT_BYTES}
+     *                                  bytes.
      * @throws \ArtisanPackUI\GoogleBusinessProfile\Exceptions\ApiException
      *         When the API returns an error or the request fails at the
      *         transport level after all retries.
@@ -164,6 +181,16 @@ class ReviewsClient extends BaseClient
 
         if ( '' === $trimmed ) {
             throw new InvalidArgumentException( 'comment is required and must be a non-empty reply body.' );
+        }
+
+        $byteLength = strlen( $trimmed );
+
+        if ( $byteLength > self::MAX_REPLY_COMMENT_BYTES ) {
+            throw new InvalidArgumentException( sprintf(
+                'comment must be at most %d bytes; %d given.',
+                self::MAX_REPLY_COMMENT_BYTES,
+                $byteLength,
+            ) );
         }
 
         $body = $this->request( 'PUT', $name . '/reply', [], [ 'comment' => $trimmed ] );
