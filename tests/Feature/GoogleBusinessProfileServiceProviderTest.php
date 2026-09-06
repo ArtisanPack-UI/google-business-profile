@@ -24,3 +24,4 @@ test( 'boot degrades gracefully when the artisanpack-ui/google package is not in
 
     expect( true )->toBeTrue();
 } );
+

@@ -61,9 +61,19 @@ class GoogleBusinessProfileServiceProvider extends ServiceProvider
      * `artisanpack-ui/google` package. Downstream hosts get the scope
      * added to the OAuth consent request without any per-app wiring.
      *
-     * The `class_exists()` guard keeps the package usable in hosts that
-     * bind their own {@see \ArtisanPackUI\GoogleBusinessProfile\Contracts\TokenProvider}
-     * without pulling in `artisanpack-ui/google`.
+     * The guard has two layers so both loading modes degrade cleanly:
+     *
+     * - `class_exists( Google::class )` covers the case where
+     *   `artisanpack-ui/google` is not installed at all (facade class
+     *   never autoloads). Downstream hosts that bind their own
+     *   {@see \ArtisanPackUI\GoogleBusinessProfile\Contracts\TokenProvider}
+     *   without pulling in `artisanpack-ui/google` are unaffected.
+     * - `$this->app->bound( 'google' )` covers the case where the facade
+     *   class is autoloadable but `GoogleServiceProvider` was not
+     *   registered (for example, `dont-discover`ed in the host's
+     *   `composer.json`, or the package registered only in the container
+     *   later than boot). Calling `Google::scopes()` in that state would
+     *   throw a `BindingResolutionException` mid-boot.
      *
      * @since 1.0.0
      *
@@ -71,8 +81,14 @@ class GoogleBusinessProfileServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if ( class_exists( Google::class ) ) {
-            Google::scopes()->register( Scopes::BUSINESS_MANAGE );
+        if ( ! class_exists( Google::class ) ) {
+            return;
         }
+
+        if ( ! $this->app->bound( 'google' ) ) {
+            return;
+        }
+
+        Google::scopes()->register( Scopes::BUSINESS_MANAGE );
     }
 }
