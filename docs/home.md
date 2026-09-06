@@ -14,8 +14,9 @@ downstream host applications can consume.
 - A **`TokenProvider` contract** — a one-method interface the client uses
   to obtain a fresh access token on every request. No OAuth lives here;
   the host binds whatever provider fits.
-- **Four resource clients**, one per Google Business Profile API family
-  (Account Management, Business Information, Legacy v4, Performance),
+- **Four API families, six resource clients** — Account Management,
+  Business Information, Performance, and the Legacy v4 host (which
+  serves `ReviewsClient`, `LocalPostsClient`, and `MediaClient`) — all
   built on a shared `BaseClient` that handles auth, retries, and error
   mapping.
 - **First-class `Http::fake()` support** — every client resolves the same

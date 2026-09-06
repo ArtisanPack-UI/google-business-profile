@@ -19,5 +19,5 @@ a host application or downstream ArtisanPack UI package.
   process, what it gates (release, not development), and how to keep
   local work unblocked while approval is pending.
 
-See also: [[api-families]] for the reference map of every method each
-client exposes.
+See also: [API families](reference/api-families.md) for the reference
+map of every method each client exposes.

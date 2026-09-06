@@ -122,8 +122,15 @@ expect( fn () => app( AccountManagementClient::class )->listAccounts() )
     ->toThrow( ApiException::class );
 ```
 
-Both factories preserve the status code and raw response body on the
-exception, so tests can assert on either.
+The two factories carry different information:
+
+- `ApiException::fromResponse()` preserves the observed HTTP status via
+  `statusCode()` and the raw response body via `responseBody()`. Tests
+  can assert on either.
+- `ApiException::transportFailure()` reports status `0` (no response was
+  received) and `responseBody()` returns `null`. The underlying
+  transport exception is chained as `->getPrevious()`, so tests assert
+  the previous exception instead of a body.
 
 ## Stubbing the `TokenProvider`
 
@@ -131,5 +138,5 @@ Pair `Http::fake()` with a stub `TokenProvider` binding so no real token
 is ever required. See the [token-provider guide](token-provider.md) for
 a stub example.
 
-See also: [[token-provider]] for wiring the provider that ships tokens
-into these tests.
+See also: [Token provider contract](token-provider.md) for wiring the
+provider that ships tokens into these tests.

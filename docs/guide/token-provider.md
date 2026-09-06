@@ -113,4 +113,5 @@ to recover — an unauthenticated request will be rejected by Google with a
 the failure from the provider instead lets the caller distinguish
 "we never had a token" from "Google rejected our token".
 
-See also: [[testing]] for stubbing the provider under `Http::fake()`.
+See also: [Testing with `Http::fake()`](testing.md) for stubbing the
+provider under fakes.

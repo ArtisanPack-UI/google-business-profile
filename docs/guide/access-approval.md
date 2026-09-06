@@ -66,4 +66,5 @@ Once approval lands, swap the stub `TokenProvider` for the real OAuth-backed
 one (in Keystone, `GoogleOAuthManager`) and remove the `Http::fake()`
 call. No client code has to change.
 
-See also: [[token-provider]] and [[testing]].
+See also: [Token provider contract](token-provider.md) and
+[Testing with `Http::fake()`](testing.md).

@@ -96,13 +96,15 @@ the client hides that detail; callers only interact with `MediaClient`.
 
 Every method above:
 
-- Delegates authentication to the injected `TokenProvider` (see
-  [[token-provider]]).
-- Retries `HTTP 429`, `HTTP 5xx`, and `ConnectionException` up to three
-  times by default with a 250ms sleep between attempts.
+- Delegates authentication to the injected `TokenProvider` (see the
+  [Token provider contract](../guide/token-provider.md)).
+- Retries `HTTP 429`, `HTTP 5xx`, and `ConnectionException` — up to
+  three total attempts by default (two retries after the initial
+  request), with a 250ms sleep between attempts.
 - Maps every non-2xx response and every terminal `ConnectionException` to
   `ArtisanPackUI\GoogleBusinessProfile\Exceptions\ApiException`.
 - Decodes the JSON response into a typed DTO under the family's
   `DataTransferObjects/` namespace.
 
-See [[testing]] for how to exercise these methods under `Http::fake()`.
+See [Testing with `Http::fake()`](../guide/testing.md) for how to
+exercise these methods under fakes.
