@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+### Changed
+
+- `ApiException::fromResponse()` now distinguishes the Google Business
+  Profile "access not approved" flavor of `HTTP 429` from ordinary
+  per-minute rate limiting. When Google's `google.rpc.ErrorInfo` detail
+  reports `reason: RATE_LIMIT_EXCEEDED` with `quota_limit_value: "0"`
+  — the signature Google returns until the Cloud project is approved
+  for Business Profile API access — the exception message points at the
+  access request form instead of the generic "rate-limited" text. The
+  parser is defensive: malformed bodies, missing keys, or non-scalar
+  types fall back to the original message without throwing.
+
 ### Added
 
 - v4 legacy Reviews API client (`ReviewsClient::listReviews()` and
