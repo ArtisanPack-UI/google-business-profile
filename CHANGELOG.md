@@ -4,6 +4,12 @@
 
 ### Added
 
+- `GoogleBusinessProfileServiceProvider::boot()` now auto-registers the
+  `Scopes::BUSINESS_MANAGE` OAuth scope with the `artisanpack-ui/google`
+  package's `ScopeRegistry` when that package is present. Downstream
+  hosts no longer have to add the scope in their own boot code; hosts
+  that bind their own `TokenProvider` without `artisanpack-ui/google`
+  are unaffected (a `class_exists()` guard keeps the boot a no-op).
 - v4 legacy Reviews API client (`ReviewsClient::listReviews()` and
   `ReviewsClient::replyToReview()`) with typed `Review`, `ReviewList`,
   `Reviewer`, and `ReviewReply` DTOs. `listReviews()` accepts `pageSize`,
