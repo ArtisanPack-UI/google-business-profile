@@ -1,0 +1,19 @@
+{
+    "name": "accounts/106237764891234567890/locations/12345678901234567890/media/AF1QipMExampleMediaKey",
+    "mediaFormat": "PHOTO",
+    "locationAssociation": { "category": "EXTERIOR" },
+    "googleUrl": "https://lh3.googleusercontent.example/full",
+    "thumbnailUrl": "https://lh3.googleusercontent.example/thumb",
+    "createTime": "2026-09-06T12:34:56Z",
+    "dimensions": { "widthPixels": 1600, "heightPixels": 1200 },
+    "insights": { "viewCount": "4211" },
+    "attribution": {
+        "profileName": "Jamie Q.",
+        "profilePhotoUrl": "https://lh3.googleusercontent.example/reviewer"
+    },
+    "description": "Storefront on a rainy morning.",
+    "sourceUrl": "https://jamiescoffee.example/photos/storefront.jpg",
+    "dataRef": {
+        "resourceName": "CAoSLEFGMVFpcE1FeGFtcGxlUmVzb3VyY2VOYW1l"
+    }
+}

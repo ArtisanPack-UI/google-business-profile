@@ -1,0 +1,68 @@
+{
+    "localPosts": [
+        {
+            "name": "accounts/106237764891234567890/locations/12345678901234567890/localPosts/1111111111",
+            "languageCode": "en",
+            "summary": "New autumn menu — pumpkin spice cortado is back.",
+            "callToAction": {
+                "actionType": "LEARN_MORE",
+                "url": "https://jamiescoffee.example/autumn"
+            },
+            "createTime": "2026-09-01T15:04:05Z",
+            "updateTime": "2026-09-02T10:00:00Z",
+            "state": "LIVE",
+            "media": [
+                {
+                    "mediaFormat": "PHOTO",
+                    "sourceUrl": "https://jamiescoffee.example/photos/cortado.jpg",
+                    "googleUrl": "https://lh3.googleusercontent.example/abc123"
+                }
+            ],
+            "searchUrl": "https://www.google.com/maps/place/?q=place_id:ChIJExampleId1234",
+            "topicType": "STANDARD"
+        },
+        {
+            "name": "accounts/106237764891234567890/locations/12345678901234567890/localPosts/2222222222",
+            "summary": "Latte-art throwdown this Saturday.",
+            "topicType": "EVENT",
+            "state": "LIVE",
+            "event": {
+                "title": "Latte Art Throwdown",
+                "schedule": {
+                    "startDate": { "year": 2026, "month": 9, "day": 20 },
+                    "endDate": { "year": 2026, "month": 9, "day": 20 },
+                    "startTime": { "hours": 19, "minutes": 0 },
+                    "endTime": { "hours": 22, "minutes": 30 }
+                }
+            }
+        },
+        {
+            "name": "accounts/106237764891234567890/locations/12345678901234567890/localPosts/3333333333",
+            "summary": "20% off any pour-over this week.",
+            "topicType": "OFFER",
+            "state": "LIVE",
+            "offer": {
+                "couponCode": "POUR20",
+                "redeemOnlineUrl": "https://jamiescoffee.example/redeem",
+                "termsConditions": "One redemption per customer. Excludes cold brew."
+            },
+            "event": {
+                "title": "20% Off Pour-Overs",
+                "schedule": {
+                    "startDate": { "year": 2026, "month": 9, "day": 15 },
+                    "endDate": { "year": 2026, "month": 9, "day": 22 }
+                }
+            }
+        },
+        {
+            "name": "accounts/106237764891234567890/locations/12345678901234567890/localPosts/4444444444",
+            "summary": "Temporary closure — burst pipe.",
+            "topicType": "ALERT",
+            "alertType": "COVID_19",
+            "state": "PROCESSING",
+            "media": "not-an-array-should-be-ignored"
+        },
+        [ "not", "an", "object" ]
+    ],
+    "nextPageToken": "Cg0KCwoJdG9waWMtb2Zm"
+}
