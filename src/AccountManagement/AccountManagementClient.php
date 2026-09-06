@@ -43,8 +43,9 @@ class AccountManagementClient extends BaseClient
     /**
      * Google's documented maximum for the `pageSize` parameter on
      * `accounts.list`. Requests larger than this are rejected by the API,
-     * so we clamp in the caller to fail loudly during development rather
-     * than after a network round-trip.
+     * so the caller validates against this ceiling and throws
+     * {@see InvalidArgumentException} to fail loudly during development
+     * rather than after a network round-trip.
      *
      * @since 1.0.0
      *

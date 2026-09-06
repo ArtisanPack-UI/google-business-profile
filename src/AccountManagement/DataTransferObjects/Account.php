@@ -24,9 +24,12 @@ namespace ArtisanPackUI\GoogleBusinessProfile\AccountManagement\DataTransferObje
  * callers see whatever value the API returned — including values Google
  * may add later — without the DTO layer silently dropping them.
  *
- * The raw response is preserved on {@see self::$raw} so consumers can reach
- * fields the typed surface does not yet expose (for example, the
- * `organizationInfo` sub-resource) without a round-trip.
+ * The full account payload — every field the API returned, whether or not
+ * it also appears as a typed property — is preserved on {@see self::$raw}
+ * so consumers can reach fields the typed surface does not yet expose (for
+ * example, the `organizationInfo` sub-resource) without a round-trip.
+ * Because typed fields are duplicated on `$raw`, treat it as the source of
+ * truth for the wire payload rather than as a "leftovers" bag.
  *
  * @package    ArtisanPack_UI
  * @subpackage GoogleBusinessProfile
