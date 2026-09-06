@@ -45,3 +45,61 @@ function something(): void
 {
     // ..
 }
+
+/**
+ * Load a JSON fixture from `tests/Fixtures/payloads/` and return it decoded.
+ *
+ * Path is relative to `tests/Fixtures/payloads/` (e.g. `reviews/reviews.list.full.json`).
+ * The fixtures capture canonical Google Business Profile API responses so
+ * the DTO-mapping tests can pin exact wire shapes without embedding them
+ * inline in every test.
+ *
+ * @return array<string, mixed>
+ */
+function gbpFixture( string $path ): array
+{
+    $absolute = __DIR__ . '/Fixtures/payloads/' . ltrim( $path, '/' );
+
+    if ( ! is_file( $absolute ) ) {
+        throw new RuntimeException( sprintf( 'Fixture not found: %s', $absolute ) );
+    }
+
+    $contents = file_get_contents( $absolute );
+
+    if ( false === $contents ) {
+        throw new RuntimeException( sprintf( 'Unable to read fixture: %s', $absolute ) );
+    }
+
+    $decoded = json_decode( $contents, true, 512, JSON_THROW_ON_ERROR );
+
+    if ( ! is_array( $decoded ) ) {
+        throw new RuntimeException( sprintf( 'Fixture %s did not decode to an object.', $path ) );
+    }
+
+    return $decoded;
+}
+
+/**
+ * Build any BaseClient-derived API client wired for fixture-driven tests.
+ *
+ * All fixture feature tests use the same wiring: the fixture-stub
+ * TokenProvider, the shared HttpFactory so `Http::fake()` intercepts, a
+ * 5-second timeout, and a single attempt with no sleep. Centralising here
+ * keeps that shape in one place and avoids six near-identical factories.
+ *
+ * @template T of \ArtisanPackUI\GoogleBusinessProfile\Http\BaseClient
+ *
+ * @param  class-string<T>  $clientClass
+ *
+ * @return T
+ */
+function gbpFixtureClient( string $clientClass ): ArtisanPackUI\GoogleBusinessProfile\Http\BaseClient
+{
+    return new $clientClass(
+        tokenProvider: new Tests\Fixtures\FixtureTokenProvider(),
+        http         : app( Illuminate\Http\Client\Factory::class ),
+        timeout      : 5,
+        maxAttempts  : 1,
+        retrySleepMs : 0,
+    );
+}

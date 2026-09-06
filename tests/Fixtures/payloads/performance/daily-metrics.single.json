@@ -1,0 +1,10 @@
+{
+    "timeSeries": {
+        "datedValues": [
+            { "date": { "year": 2026, "month": 9, "day": 1 }, "value": "142" },
+            { "date": { "year": 2026, "month": 9, "day": 2 }, "value": "0" },
+            { "date": { "year": 2026, "month": 9, "day": 3 }, "value": "319" },
+            { "date": { "year": 2026, "month": 9, "day": 4 }, "value": "217" }
+        ]
+    }
+}
