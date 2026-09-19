@@ -66,7 +66,7 @@ class GoogleBusinessProfileServiceProvider extends ServiceProvider
      * - `class_exists( Google::class )` covers the case where
      *   `artisanpack-ui/google` is not installed at all (facade class
      *   never autoloads). Downstream hosts that bind their own
-     *   {@see \ArtisanPackUI\GoogleBusinessProfile\Contracts\TokenProvider}
+     *   {@see Contracts\TokenProvider}
      *   without pulling in `artisanpack-ui/google` are unaffected.
      * - `$this->app->bound( 'google' )` covers the case where the facade
      *   class is autoloadable but `GoogleServiceProvider` was not

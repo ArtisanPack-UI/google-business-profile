@@ -62,9 +62,9 @@ test( 'fromResponse detects the access-approval flavor of 429 (quota_limit_value
             'status'  => 'RESOURCE_EXHAUSTED',
             'details' => [
                 [
-                    '@type'  => 'type.googleapis.com/google.rpc.ErrorInfo',
-                    'reason' => 'RATE_LIMIT_EXCEEDED',
-                    'domain' => 'googleapis.com',
+                    '@type'    => 'type.googleapis.com/google.rpc.ErrorInfo',
+                    'reason'   => 'RATE_LIMIT_EXCEEDED',
+                    'domain'   => 'googleapis.com',
                     'metadata' => [
                         'quota_limit'       => 'DefaultRequestsPerMinutePerProject',
                         'quota_limit_value' => '0',
@@ -107,17 +107,17 @@ test( 'fromResponse falls back to the generic 429 message on malformed bodies', 
     expect( $exception->getMessage() )->toContain( 'rate-limited' );
     expect( $exception->getMessage() )->not->toContain( 'access is not approved' );
 } )->with( [
-    'empty body'                => '',
-    'not JSON'                  => 'not json at all',
-    'JSON but not an object'    => '[1,2,3]',
-    'missing error key'         => '{"foo":"bar"}',
-    'details not an array'      => '{"error":{"details":"oops"}}',
-    'detail not an array'       => '{"error":{"details":["oops"]}}',
-    'wrong reason'              => '{"error":{"details":[{"reason":"OTHER","metadata":{"quota_limit_value":"0"}}]}}',
-    'metadata not an array'     => '{"error":{"details":[{"reason":"RATE_LIMIT_EXCEEDED","metadata":"nope"}]}}',
-    'no quota_limit_value key'  => '{"error":{"details":[{"reason":"RATE_LIMIT_EXCEEDED","metadata":{}}]}}',
+    'empty body'                 => '',
+    'not JSON'                   => 'not json at all',
+    'JSON but not an object'     => '[1,2,3]',
+    'missing error key'          => '{"foo":"bar"}',
+    'details not an array'       => '{"error":{"details":"oops"}}',
+    'detail not an array'        => '{"error":{"details":["oops"]}}',
+    'wrong reason'               => '{"error":{"details":[{"reason":"OTHER","metadata":{"quota_limit_value":"0"}}]}}',
+    'metadata not an array'      => '{"error":{"details":[{"reason":"RATE_LIMIT_EXCEEDED","metadata":"nope"}]}}',
+    'no quota_limit_value key'   => '{"error":{"details":[{"reason":"RATE_LIMIT_EXCEEDED","metadata":{}}]}}',
     'quota_limit_value is array' => '{"error":{"details":[{"reason":"RATE_LIMIT_EXCEEDED","metadata":{"quota_limit_value":["0"]}}]}}',
-    'quota_limit_value is null' => '{"error":{"details":[{"reason":"RATE_LIMIT_EXCEEDED","metadata":{"quota_limit_value":null}}]}}',
+    'quota_limit_value is null'  => '{"error":{"details":[{"reason":"RATE_LIMIT_EXCEEDED","metadata":{"quota_limit_value":null}}]}}',
 ] );
 
 test( 'fromResponse formats generic 5xx server errors with their status', function (): void {

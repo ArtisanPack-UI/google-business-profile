@@ -16,7 +16,7 @@ test( 'boot degrades gracefully when the artisanpack-ui/google package is not in
     // fact that every test in the suite already resolves the provider
     // proves boot() does not error under that condition; this test locks
     // that guarantee in explicitly.
-    expect( class_exists( \ArtisanPackUI\Google\Facades\Google::class ) )->toBeFalse();
+    expect( class_exists( ArtisanPackUI\Google\Facades\Google::class ) )->toBeFalse();
 
     $provider = new GoogleBusinessProfileServiceProvider( app() );
 

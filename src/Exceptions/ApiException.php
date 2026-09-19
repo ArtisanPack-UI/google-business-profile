@@ -83,6 +83,44 @@ class ApiException extends GoogleBusinessProfileException
     }
 
     /**
+     * Build an exception representing a transport-level failure (network
+     * error, DNS failure, timeout, TLS error, etc.).
+     *
+     * @since 1.0.0
+     *
+     * @param  ConnectionException|Throwable  $previous  The underlying
+     *                                                   transport exception.
+     */
+    public static function transportFailure( Throwable $previous ): self
+    {
+        return new self(
+            'Google Business Profile request failed before receiving a response: ' . $previous->getMessage(),
+            0,
+            $previous,
+        );
+    }
+
+    /**
+     * The observed HTTP status code, or 0 when no response was received.
+     *
+     * @since 1.0.0
+     */
+    public function statusCode(): int
+    {
+        return $this->statusCode;
+    }
+
+    /**
+     * The raw response body, or null when no response was received.
+     *
+     * @since 1.0.0
+     */
+    public function responseBody(): ?string
+    {
+        return $this->responseBody;
+    }
+
+    /**
      * Pick a message for a `HTTP 429` response.
      *
      * Google returns `HTTP 429 RESOURCE_EXHAUSTED` for two distinct
@@ -155,43 +193,5 @@ class ApiException extends GoogleBusinessProfileException
         }
 
         return $default;
-    }
-
-    /**
-     * Build an exception representing a transport-level failure (network
-     * error, DNS failure, timeout, TLS error, etc.).
-     *
-     * @since 1.0.0
-     *
-     * @param  ConnectionException|Throwable  $previous  The underlying
-     *                                                   transport exception.
-     */
-    public static function transportFailure( Throwable $previous ): self
-    {
-        return new self(
-            'Google Business Profile request failed before receiving a response: ' . $previous->getMessage(),
-            0,
-            $previous,
-        );
-    }
-
-    /**
-     * The observed HTTP status code, or 0 when no response was received.
-     *
-     * @since 1.0.0
-     */
-    public function statusCode(): int
-    {
-        return $this->statusCode;
-    }
-
-    /**
-     * The raw response body, or null when no response was received.
-     *
-     * @since 1.0.0
-     */
-    public function responseBody(): ?string
-    {
-        return $this->responseBody;
     }
 }
