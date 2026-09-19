@@ -1,0 +1,37 @@
+{
+    "reviews": [
+        {
+            "name": "accounts/106237764891234567890/locations/12345678901234567890/reviews/AbcReview1",
+            "reviewId": "AbcReview1",
+            "reviewer": {
+                "displayName": "Jamie Q.",
+                "profilePhotoUrl": "https://lh3.googleusercontent.example/jamie"
+            },
+            "starRating": "FIVE",
+            "comment": "Best pour-over in the city.",
+            "createTime": "2026-08-15T10:22:33Z",
+            "updateTime": "2026-08-15T10:22:33Z",
+            "reviewReply": {
+                "comment": "Thanks, Jamie — see you Saturday!",
+                "updateTime": "2026-08-16T09:01:00Z"
+            }
+        },
+        {
+            "name": "accounts/106237764891234567890/locations/12345678901234567890/reviews/AbcReview2",
+            "reviewId": "AbcReview2",
+            "reviewer": { "isAnonymous": true },
+            "starRating": "FOUR",
+            "createTime": "2026-08-20T14:00:00Z"
+        },
+        {
+            "name": "accounts/106237764891234567890/locations/12345678901234567890/reviews/AbcReview3",
+            "reviewId": "AbcReview3",
+            "reviewer": { "displayName": "Sam R." },
+            "starRating": "ONE",
+            "comment": "Too crowded on weekends."
+        }
+    ],
+    "averageRating": 4.2,
+    "totalReviewCount": 47,
+    "nextPageToken": "CgcIARIDIAIoAQ"
+}

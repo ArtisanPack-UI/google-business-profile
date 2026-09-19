@@ -1,0 +1,38 @@
+{
+    "accounts": [
+        {
+            "name": "accounts/106237764891234567890",
+            "accountName": "Jamie's Coffee Roasters",
+            "type": "PERSONAL",
+            "role": "OWNER",
+            "verificationState": "VERIFIED",
+            "vettedState": "VETTED",
+            "accountNumber": "A-000123",
+            "permissionLevel": "OWNER_LEVEL",
+            "organizationInfo": {
+                "registeredDomain": "jamiescoffee.example",
+                "postalAddress": {
+                    "regionCode": "US",
+                    "administrativeArea": "OR",
+                    "locality": "Portland"
+                }
+            }
+        },
+        {
+            "name": "accounts/999888777666555444",
+            "accountName": "North Star Agency",
+            "type": "LOCATION_GROUP",
+            "role": "MANAGER",
+            "verificationState": "VERIFIED",
+            "vettedState": "NOT_VETTED",
+            "permissionLevel": "MEMBER_LEVEL"
+        },
+        {
+            "name": "accounts/121212121212121212",
+            "accountName": "Field Team",
+            "type": "USER_GROUP",
+            "role": "SITE_MANAGER"
+        }
+    ],
+    "nextPageToken": "CgkKB29mZnNldC0y"
+}

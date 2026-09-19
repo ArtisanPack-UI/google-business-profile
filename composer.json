@@ -3,7 +3,6 @@
   "description": "OAuth-free, UI-free API client for the Google Business Profile family of APIs (locations, performance, reviews, posts).",
   "type": "library",
   "license": "MIT",
-  "version": "1.0.0",
   "keywords": [
     "laravel",
     "google",
@@ -72,7 +71,5 @@
         "GoogleBusinessProfile": "ArtisanPackUI\\GoogleBusinessProfile\\Facades\\GoogleBusinessProfile"
       }
     }
-  },
-  "minimum-stability": "stable",
-  "prefer-stable": true
+  }
 }

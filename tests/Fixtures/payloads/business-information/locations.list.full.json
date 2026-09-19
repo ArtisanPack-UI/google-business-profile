@@ -1,0 +1,87 @@
+{
+    "locations": [
+        {
+            "name": "locations/12345678901234567890",
+            "title": "Jamie's Coffee — Pearl District",
+            "languageCode": "en",
+            "storeCode": "PDX-01",
+            "websiteUri": "https://jamiescoffee.example/pearl",
+            "phoneNumbers": {
+                "primaryPhone": "+1 503-555-0142",
+                "additionalPhones": [ "+1 503-555-0198" ]
+            },
+            "categories": {
+                "primaryCategory": {
+                    "name": "categories/gcid:coffee_shop",
+                    "displayName": "Coffee shop"
+                },
+                "additionalCategories": [
+                    { "name": "categories/gcid:cafe", "displayName": "Cafe" }
+                ]
+            },
+            "storefrontAddress": {
+                "regionCode": "US",
+                "languageCode": "en",
+                "postalCode": "97209",
+                "administrativeArea": "OR",
+                "locality": "Portland",
+                "addressLines": [ "1200 NW Lovejoy St" ]
+            },
+            "regularHours": {
+                "periods": [
+                    {
+                        "openDay": "MONDAY",
+                        "openTime": { "hours": 6, "minutes": 30 },
+                        "closeDay": "MONDAY",
+                        "closeTime": { "hours": 18 }
+                    }
+                ]
+            },
+            "specialHours": {
+                "specialHourPeriods": [
+                    {
+                        "startDate": { "year": 2026, "month": 12, "day": 25 },
+                        "endDate": { "year": 2026, "month": 12, "day": 25 },
+                        "closed": true
+                    }
+                ]
+            },
+            "labels": [ "flagship", "roastery" ],
+            "latlng": { "latitude": 45.5272, "longitude": -122.6819 },
+            "openInfo": {
+                "status": "OPEN",
+                "canReopen": true,
+                "openingDate": { "year": 2019, "month": 3, "day": 12 }
+            },
+            "metadata": {
+                "hasGoogleUpdated": false,
+                "hasPendingEdits": false,
+                "canDelete": true,
+                "placeId": "ChIJExampleId1234"
+            },
+            "profile": {
+                "description": "Small-batch roaster and neighborhood cafe."
+            },
+            "serviceItems": [
+                { "structuredServiceItem": { "serviceTypeId": "job_type_id:pour_over" } }
+            ]
+        },
+        {
+            "name": "locations/98765432109876543210",
+            "title": "Jamie's Coffee — Mobile Cart",
+            "serviceArea": {
+                "businessType": "CUSTOMER_LOCATION_ONLY",
+                "places": {
+                    "placeInfos": [
+                        { "placeName": "Portland, OR", "placeId": "ChIJPortlandPlaceId" }
+                    ]
+                }
+            },
+            "labels": [ "mobile" ]
+        },
+        {},
+        [ "not-an-object" ]
+    ],
+    "totalSize": "12",
+    "nextPageToken": "CgcIARIDIAEoAQ"
+}

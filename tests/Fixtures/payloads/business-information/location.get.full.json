@@ -1,0 +1,27 @@
+{
+    "name": "locations/12345678901234567890",
+    "title": "Jamie's Coffee — Pearl District",
+    "languageCode": "en",
+    "storeCode": "PDX-01",
+    "websiteUri": "https://jamiescoffee.example/pearl",
+    "phoneNumbers": {
+        "primaryPhone": "+1 503-555-0142"
+    },
+    "categories": {
+        "primaryCategory": {
+            "name": "categories/gcid:coffee_shop",
+            "displayName": "Coffee shop"
+        }
+    },
+    "storefrontAddress": {
+        "regionCode": "US",
+        "postalCode": "97209",
+        "administrativeArea": "OR",
+        "locality": "Portland",
+        "addressLines": [ "1200 NW Lovejoy St" ]
+    },
+    "labels": [ "flagship", 42, "roastery" ],
+    "latlng": { "latitude": 45.5272, "longitude": -122.6819 },
+    "openInfo": { "status": "OPEN" },
+    "metadata": { "placeId": "ChIJExampleId1234" }
+}
